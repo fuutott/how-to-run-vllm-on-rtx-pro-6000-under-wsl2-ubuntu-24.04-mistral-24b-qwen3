@@ -1,8 +1,24 @@
 # How to run VLLM on RTX PRO 6000 (cuda 12.8) under WSL2 Ubuntu 24.04 on windows 11 to play around with mistral 24b 2501, 2503, and qwen 3
 
-check wsl2 vhdx settings, by default it allocates 1tb and let's it grow. Consider your system storage layout. I've set mine to 256gb default size.
+Tried and tested on 6th June 2025. 
 
-Get Ubuntu 24.04.1 LTS from store and start, go through initial setup, once done get in and 
+windows nvidia-smi 
+> NVIDIA-SMI 576.52                 Driver Version: 576.52         CUDA Version: 12.9
+
+wsl2 ubuntu nvidia-smi
+> NVIDIA-SMI 575.57.04              Driver Version: 576.52         CUDA Version: 12.9
+
+## Guide
+
+*Before we start. WSL2 by default allocates 1TB for vhdx and let's it grow.*
+
+*Consider your system storage layout. I've set mine to 256gb default size in Start > WSL Settings > File sytem > Default VHD Size*
+
+*I've also enabled WSL Settings > Optional Features > Enable sparse VHD by default*  
+
+
+
+Install Ubuntu 24.04.1 LTS from microsoft store and start, go through initial setup, once done get in and 
 
 
 ```bash
@@ -10,7 +26,9 @@ apt-get update apt-get upgrade
 ```
 
 
-(Optional) Once update finished you can move Ubuntu vhdx to where you want it on your storage, resize if you expect to work with bigger models:
+(Optional) Once update finishes you can move Ubuntu vhdx to where you want it on your storage, resize if you expect to work with bigger models:
+
+
 ```bash
 wsl --shutdown
 wsl --manage Ubuntu-24.04 --move D:\wsl\Ubuntu-24.04 
@@ -19,8 +37,8 @@ wsl --set-default Ubuntu-24.04
 ```
 
 
-Go back to ubuntu
-gollow steps to install Cuda toolkit 12.8 as per guide in the link below:
+Go back to ubuntu.
+Follow steps to install Cuda toolkit 12.8 as per guide in the link below:
 
 Linux > x86_64 > WSL-Ubuntu > 2.0 > deb (network)
 
@@ -65,8 +83,8 @@ uv venv --python 3.12 --seed
 ```
 
 
-Before you activate venv add this at the end of venv/bin/activate script of your choice with right syntax.
-I got multiple gpus, nvidia-smi says rtx pro is id 0 so I'm limiting vllm to just visible device 0
+(Optional but recommended) Before you activate venv add this at the end of venv/bin/activate script of your choice with right syntax.
+I got multiple gpus, nvidia-smi says rtx pro 6000 is id 0 so I'm limiting vllm to just visible device 0
 
 
 ```bash
@@ -159,7 +177,9 @@ Install bitsandbytes for quantization
 pip install bitsandbytes
 ```
 
-# Run some models
+That's it time to 
+
+## Run some models
 
 
 **google/gemma-3-1b-it** If all went well this should just work:
@@ -228,37 +248,37 @@ vllm serve OPEA/Mistral-Small-3.1-24B-Instruct-2503-int4-AutoRound-awq-sym \
 ```
 
 
-HERE BE DRAGONS:
+##HERE BE DRAGONS:
 
 
-```bash
---quantization, -q
-Possible choices: aqlm, awq, deepspeedfp, fp8, fbgemm_fp8, marlin, gptq_marlin_24, gptq_marlin, awq_marlin, gptq, squeezellm, compressed-tensors, bitsandbytes, qqq, None
-```
+
+> --quantization, -q
+> Possible choices: aqlm, awq, deepspeedfp, fp8, fbgemm_fp8, marlin, gptq_marlin_24, gptq_marlin, awq_marlin, gptq, squeezellm, compressed-tensors, bitsandbytes, qqq, None
 
 
-```bash
---dtype
-Possible choices: auto, half, float16, bfloat16, float, float32
-Data type for model weights and activations.
-“auto” will use FP16 precision for FP32 and FP16 models, and BF16 precision for BF16 models.
-“half” for FP16. Recommended for AWQ quantization.
-“float16” is the same as “half”.
-“bfloat16” for a balance between precision and range.
-“float” is shorthand for FP32 precision.
-“float32” for FP32 precision.
-```
 
 
-```bash
---load-format
-Possible choices: auto, pt, safetensors, npcache, dummy, tensorizer, sharded_state, gguf, bitsandbytes, mistral
-The format of the model weights to load.
-“auto” will try to load the weights in the safetensors format and fall back to the pytorch bin format if safetensors format is not available.
-“pt” will load the weights in the pytorch bin format.
-“safetensors” will load the weights in the safetensors format.
-“npcache” will load the weights in pytorch format and store a numpy cache to speed up the loading.
-“dummy” will initialize the weights with random values, which is mainly for profiling.
-“tensorizer” will load the weights using tensorizer from CoreWeave. See the Tensorize vLLM Model script in the Examples section for more information.
-“bitsandbytes” will load the weights using bitsandbytes quantization.
-```
+> --dtype
+> Possible choices: auto, half, float16, bfloat16, float, float32
+> Data type for model weights and activations.
+> “auto” will use FP16 precision for FP32 and FP16 models, and BF16 precision for BF16 models.
+> “half” for FP16. Recommended for AWQ quantization.
+> “float16” is the same as “half”.
+> “bfloat16” for a balance between precision and range.
+> “float” is shorthand for FP32 precision.
+> “float32” for FP32 precision.
+
+
+
+
+> --load-format
+> Possible choices: auto, pt, safetensors, npcache, dummy, tensorizer, sharded_state, gguf, bitsandbytes, mistral
+> The format of the model weights to load.
+> “auto” will try to load the weights in the safetensors format and fall back to the pytorch bin format if safetensors format is not available.
+> “pt” will load the weights in the pytorch bin format.
+> “safetensors” will load the weights in the safetensors format.
+> “npcache” will load the weights in pytorch format and store a numpy cache to speed up the loading.
+> “dummy” will initialize the weights with random values, which is mainly for profiling.
+> “tensorizer” will load the weights using tensorizer from CoreWeave. See the Tensorize vLLM Model script in the Examples section for more information.
+> “bitsandbytes” will load the weights using bitsandbytes quantization.
+
