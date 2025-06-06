@@ -1,4 +1,6 @@
-# How to run VLLM on RTX PRO 6000 (and likely all other Blackwell cards in rtx pro and rtx 50xx series - cuda 12.8) under WSL2 Ubuntu 24.04 on windows 11 to play around with mistral 24b 2501, 2503, and qwen 3
+# VLLM on Blackwell cards on WSL2 Ubuntu, on Windows 11
+
+## How to run VLLM on RTX PRO 6000 (and likely all other Blackwell cards in rtx pro and rtx 50xx series - cuda 12.8) under WSL2 Ubuntu 24.04 on windows 11 to play around with mistral 24b 2501, 2503, and qwen 3
 
 Tried and tested on 6th June 2025. 
 
