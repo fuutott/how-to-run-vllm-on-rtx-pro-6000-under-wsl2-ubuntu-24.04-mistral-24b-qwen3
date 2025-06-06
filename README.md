@@ -1,4 +1,4 @@
-# How to run VLLM on RTX PRO 6000 (cuda 12.8) under WSL2 Ubuntu 24.04 on windows 11 to play around with mistral 24b 2501, 2503, and qwen 3
+# How to run VLLM on RTX PRO 6000 (and likely 5090 and other 50xx series cards cuda 12.8) under WSL2 Ubuntu 24.04 on windows 11 to play around with mistral 24b 2501, 2503, and qwen 3
 
 Tried and tested on 6th June 2025. 
 
@@ -282,3 +282,4 @@ vllm serve OPEA/Mistral-Small-3.1-24B-Instruct-2503-int4-AutoRound-awq-sym \
 > “tensorizer” will load the weights using tensorizer from CoreWeave. See the Tensorize vLLM Model script in the Examples section for more information.
 > “bitsandbytes” will load the weights using bitsandbytes quantization.
 
+this Guide will likely work for rtx pro 6000, rtx 5090, 5080, 5070, 5060 and other rtx pro cards like 5000, 4500, and 4000 
